@@ -132,12 +132,12 @@ int start_menu()
 	do
 	{
 		logo();
-		cout << "welcome!!!!!!!!!!!\t(if you signup your account will be saved for ever you cannot login without an account)\n"
-			 << "1. login \n"
-			 << "2. signup \n"
-			 << "3. view all accounts\n"
-			 << "4. exit\n"
-			 << "\t\t\tENTER YOUR COMMAND : ";
+		cout << "welcome!!!!!!!!!!!\n(1) If you signup your account will be saved you don't have to signup again.\n(2) You cannot login without an account)\n"
+			 << "1. Login\n"
+			 << "2. Create an account\n"
+			 << "3. View all accounts\n"
+			 << "4. Exit\n"
+			 << "\t\t\tENTER YOUR COMMAND: ";
 		cin >> A;
 		system("cls");
 	}while(A>4 && A<1);
@@ -155,9 +155,9 @@ bool login_function()
 		logo();
 		
 		string user_id , user_password;
-		cout << "ENTER YOUR USER ID :";
+		cout << "ENTER YOUR USER_NAME: ";
 		cin >> user_id;
-		cout << "ENTER YOUR PASSWORD :";
+		cout << "ENTER YOUR PASSWORD: ";
 		cin >> user_password;
 		
 		ifstream login_data("account_details.txt");
@@ -187,24 +187,36 @@ void signup_function()
 		logo();
 		bool try_again=0;
 		string id , password , institute;
-		cout << "ENTER YOUR ID , PASSWORD AND THEN THE NAME OF INSTITUTE (everything should be with proper spacing and there should be 3 words only): ";
-		cin >> id >> password >> institute;
+		cout << "ENTER USER_NAME: ";
+		cin >> id;
+		cout << "ENTER PASSWORD: ";
+		cin >> password;
+		cout << "INSTITUTE NAME: ";
+		cin >> institute;
 		string stored_id , stored_institute , stored_password;
 		ifstream login_data("account_details.txt");
 		while(login_data >> stored_id >> stored_password >> stored_institute)
 		{
 			if (stored_id == id && stored_password==password)
 			{
-				cout << "we have this account!!!!!!!!!!!!!!!!!!!!!......try again........\n";
+				cout << "Already in database..\n";
 				system("pause");
 				login_data.close();
-				try_again=1;
 				break;
+				try_again = 1;
 			}
 		}
 		system("cls");
 		if (try_again)
 			continue;
+		else{
+			cout << "Do you want to save this data(y/n): ";
+			char a;
+			cin >> a;
+			if (a == 'n' || a == 'N'){
+				break;
+			}
+		}
 		ofstream signup_data("account_details.txt",ios::app);
 		signup_data << id << "\t" << password << "\t" << institute << endl;
 		break;
@@ -215,10 +227,11 @@ void account_list()
 {
 	logo();
 	string A,B,C;
-	cout << "USER ID\t\t\t\tINSTITUTE\n";
+	int id = 1;
+	cout << "ID\t\t\t\tUSER_NAME\t\t\t\tINSTITUTE\n";
 	ifstream data("account_details.txt");
 	while(data >> A >> B >> C)
-		cout << A << "\t\t\t\t" << C << endl;
+		cout << id++ << "\t\t\t\t" << A << "\t\t\t\t" << C << endl;
 	system("pause");
 	system("cls");
 }
@@ -230,12 +243,12 @@ int login_menu()
 	do
 	{
 		logo();
-		cout << "USER : " << id << "\t\t\t" << "INSTITUTE : " << institute << endl
+		cout << "USER_NAME: " << id << "\t\t\t" << "INSTITUTE: " << institute << endl
 			 << "TO GET EXCESS YOU HAVE TO FILL A FORM FIRST TO GET REGISTERED <<(ADD ID)>>\n"
-			 << "1. login\n"
-			 << "2. add id\n"
-			 << "3. get all " << institute << " account deatils\n"
-			 << "4. log out\n"
+			 << "1. USER_LOGIN\n"
+			 << "2. ADD USER\n"
+			 << "3. VIEW ALL " << institute << " USERS\n"
+			 << "4. LOG OUT\n"
 			 << "ENTER YOUR COMMAND:";
 		cin >> A;
 		system("cls");
@@ -285,11 +298,15 @@ void signup_institute()
 		logo();
 		bool try_again=0;
 		string name , password , type;
-		cout << "ENTER YOUR NAME , PASSWORD AND THEN THE TYPE OF ACCOUNT (TYPES: STUDENT[use='std'] || LIBRARIAN[use='lib']): ";
-		cin >> name >> password >> type;
+		cout << "ENTER YOUR NAME: ";
+		cin >> name;
+		cout << "ENTER PASSWORD: ";
+		cin >> password;
+		cout << "ACCOUNT TYPE\n1) for STUDENT[use='std']\n2) for LIBRARIAN[use='lib'])\nENTER TYPE: ";
+		cin >> type;
 		while(type!="std" && type!="lib")
 		{
-			cout << "wrong type........... use commom sence!!!!!!!!!!!!!!............enter type again..........\n";
+			cout << "wrong type........... Are you blind or dumb????............enter type again..........\n";
 			cin >> type;
 		}
 		string stored_name , stored_type , stored_password;
@@ -309,6 +326,14 @@ void signup_institute()
 		system("cls");
 		if (try_again)
 			continue;
+		else{
+			cout << "Do you want to save this data(y/n): ";
+			char a;
+			cin >> a;
+			if (a == 'n' || a == 'N'){
+				break;
+			}
+		}
 		ofstream signup_data(file_name.c_str() , ios::app);
 		signup_data << name << "\t" << password << "\t" << type << endl;
 		break;
@@ -319,7 +344,7 @@ void institute_details()
 {
 	logo();
 	string A,B,C;
-	cout << "USER ID\t\t\t\tINSTITUTE\n";
+	cout << "USER\t\t\t\tTYPE\n";
 	string file_name=global_institute+"_details.txt";
 	ifstream data(file_name.c_str());
 	while(data >> A >> B >> C)
@@ -511,6 +536,7 @@ void available_books()
 	bool latest=0;
 	string file_name=global_institute+"_books.txt";
 	string a,b,c,d,e,A,B,C,D,E;
+	cout << "BOOK\tAuthor\tID\n";
 	ifstream outer_file(file_name.c_str());
 	while (outer_file >> a >> b >> c >> d >> e)
 	{
@@ -542,6 +568,7 @@ void borrowed_books()
 	bool latest=0;
 	string file_name=global_institute+"_books.txt";
 	string a,b,c,d,e,A,B,C,D,E;
+	cout << "BOOK\tAuthor\tID\n";
 	ifstream outer_file(file_name.c_str());
 	while (outer_file >> a >> b >> c >> d >> e)
 	{
@@ -573,11 +600,11 @@ void add_book()
 	{
 		id=0;
 		string A,B,C,D,E;
-		cout << "enter the book name :";
+		cout << "ENTER BOOK NAME: ";
 		cin >> A;
-		cout << "enter the author name :";
+		cout << "ENTER AUTHOR NAME: ";
 		cin >> B;
-		cout << "enter the book id : ";
+		cout << "ASSIGN BOOK ID: ";
 		cin >> C;
 		D="available", E="library";
 		string file_name=global_institute+"_books.txt";
@@ -587,7 +614,7 @@ void add_book()
 		{
 			if(a==A || c==C)
 			{
-				cout << "common file or id found try again\n";
+				cout << "UNAVILABLE NAME or ID.\n";
 				myfile.close();
 				id=1;
 				break;
@@ -598,12 +625,13 @@ void add_book()
 		ofstream file(file_name.c_str(), ios::app);
 		file << A  << "\t" << B << "\t" << C << "\t" << D << "\t" << E << endl;  
 		file.close();
-		cout << "file added successfully................................\n";
+		cout << "BOOK HAS BEEN ADDED IN THE SYSTEM................................\n";
 	}while(false);
 }
 
 void all_books()
 {
+	cout << "BOOK\tAuthor\tID\n";
 	string file_name=global_institute+"_books.txt";
 	string a,b,c,d,e;
 	ifstream outer_file(file_name.c_str());
@@ -690,31 +718,29 @@ void all_students()
 
 void all_fresh_books()
 {
-	bool latest=0;
+	bool latest=1;
 	string file_name=global_institute+"_books.txt";
 	string a,b,c,d,e,A,B,C,D,E;
+	cout << "BOOK\tAuthor\tID\n";
 	ifstream outer_file(file_name.c_str());
 	while (outer_file >> a >> b >> c >> d >> e)
 	{
-		if(d=="avialable")
+		if(d=="available")
 		{
 			ifstream inner_file(file_name.c_str());
 			while (inner_file >> A >> B >> C >> D >> E)
 			{
-				if (A==a && B==b && c==C)
+				latest=1;
+				if (A==a && B==b && c==C && d!=D)
 				{
 					latest=0;
-					if(D!="avialable")
-					{
-						latest=1;
-						inner_file.close();
-						break;
-					}
+					break;
 				}
 			}
-			if(latest==0)
+			inner_file.close();
+			if(latest)
 			{
-				cout << a << "\t" << c << endl;
+				cout << a  << "\t" << b << "\t" << c << endl;
 			}
 		}
 	}
